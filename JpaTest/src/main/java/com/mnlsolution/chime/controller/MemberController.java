@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,7 +72,7 @@ public class MemberController {
 	 * 단순 전체 목록 조회 
 	 * @return
 	 */
-	@RequestMapping(value = "/list2", method=RequestMethod.GET)
+	@RequestMapping(value = "/listfull", method=RequestMethod.GET)
 	public @ResponseBody List<Member> list() {
 		
 		List<Member> list = repository.findAll();
@@ -80,7 +81,24 @@ public class MemberController {
 		
 		return list;   
 	}
-
+	
+	
+	
+	/**
+	 * 쿼리 목록 조회 
+	 * @return
+	 */
+	@RequestMapping(value = "/listquery", method=RequestMethod.GET)
+	public @ResponseBody List<Member> listquery(@RequestParam("name") String name) {
+		
+		 List<Member> member = (List<Member>) repository.findByName(name);
+		
+		return member;   
+	}
+	
+	
+	
+	
 	
 	
 
