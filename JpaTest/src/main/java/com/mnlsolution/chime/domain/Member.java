@@ -1,4 +1,4 @@
-package com.mnlsolution.chime.member;
+package com.mnlsolution.chime.domain;
 
 import java.util.Date;
 
@@ -26,10 +26,10 @@ public class Member {
 	private int age;
 
 //	@Column(name = "regitime", nullable = false,  columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-	@Column(name = "regitime", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")	
+	@Column(name = "regiTime", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")	
 	@Temporal(TemporalType.TIMESTAMP)
 //	@Temporal(TemporalType.DATE)
-	private Date regitime; 
+	private Date regiTime; 
 	
 	
 
@@ -64,12 +64,12 @@ public class Member {
 	
 	
 
-	public Date getRegitime() {
-		return regitime;
+	public Date getRegiTime() {
+		return regiTime;
 	}
 
-	public void setRegitime(Date regitime) {
-		this.regitime = regitime;
+	public void setRegiTime(Date regitime) {
+		this.regiTime = regitime;
 	}
 
 	@Override

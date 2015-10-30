@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.mnlsolution.chime.member.Member;
+import com.mnlsolution.chime.domain.Member;
 import com.mnlsolution.chime.repository.MemberRepository;
 
 /**
@@ -85,7 +85,7 @@ public class MemberController {
 	
 	
 	/**
-	 * 쿼리 목록 조회 
+	 * 네임 목록 조회 
 	 * @return
 	 */
 	@RequestMapping(value = "/listquery", method=RequestMethod.GET)
@@ -167,7 +167,7 @@ public class MemberController {
 		member.setAge(30);
 */		member.setName(name);
 		member.setAge(age);
-		member.setRegitime(date);		
+		member.setRegiTime(date);		
 		repository.save(member);
 
 		return repository.findAll();
