@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mnlsolution.chime.domain.Member;
+import com.mnlsolution.chime.domain.Team;
 import com.mnlsolution.chime.repository.MemberRepository;
+import com.mnlsolution.chime.repository.TeamRepository;
 
 /**
  * @author ch.kwak (chkwak@mnlsolution.com)
@@ -36,6 +38,10 @@ public class MemberController {
 
 	@Autowired
 	private MemberRepository repository;
+	
+	@Autowired
+	private TeamRepository teamRepository;
+	
 	
 	@RequestMapping(value = "/")
 	public @ResponseBody String home(Locale locale) {
@@ -88,8 +94,8 @@ public class MemberController {
 	 * 네임 목록 조회 
 	 * @return
 	 */
-	@RequestMapping(value = "/listquery", method=RequestMethod.GET)
-	public @ResponseBody List<Member> listquery(@RequestParam("name") String name) {
+	@RequestMapping(value = "/listName", method=RequestMethod.GET)
+	public @ResponseBody List<Member> listName(@RequestParam("name") String name) {
 		
 		 List<Member> member = (List<Member>) repository.findByName(name);
 		
@@ -97,9 +103,33 @@ public class MemberController {
 	}
 	
 	
+	/**
+	 * 네임 쿼리 조회 
+	 * @param name
+	 * @return
+	 */
+	@RequestMapping(value = "/listQuery", method=RequestMethod.GET)
+	public @ResponseBody List<Member> listQuery(@RequestParam("name") String name) {
+		
+		log.info("**************{}", name);
+		
+		 List<Member> member = (List<Member>) repository.findByCustomQueryName(name);
+		
+		return member;   
+	}
 	
 	
-	
+
+	@RequestMapping(value = "/team", method=RequestMethod.GET)
+	public @ResponseBody Team temaQuery(@RequestParam("name") String name) {
+		
+		log.info("*************{}", name);  
+		
+		// 이름으로 검색
+		Team team = (Team) teamRepository.findByTeamName(name);
+		
+		return team;   
+	}
 	
 
 	/**
@@ -125,8 +155,6 @@ public class MemberController {
 		log.info("*********** : deleteOne",  memberId);
 		
 		repository.delete(memberId);
-		
-		
 		
 		return repository.findAll();  
 	}
@@ -163,9 +191,7 @@ public class MemberController {
 		
 		Date date = new Date();
 		
-/*		member.setName("홍길동");
-		member.setAge(30);
-*/		member.setName(name);
+		member.setName(name);
 		member.setAge(age);
 		member.setRegiTime(date);		
 		repository.save(member);
