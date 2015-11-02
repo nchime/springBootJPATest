@@ -1,11 +1,15 @@
 package com.mnlsolution.chime.controller;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import javax.persistence.EntityManager;
+
+import org.apache.commons.net.ntp.TimeStamp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mnlsolution.chime.domain.Member;
+import com.mnlsolution.chime.domain.QMember;
 import com.mnlsolution.chime.domain.Team;
 import com.mnlsolution.chime.repository.MemberRepository;
 import com.mnlsolution.chime.repository.TeamRepository;
+import com.mysema.query.jpa.impl.JPAQuery;
 
 /**
  * @author ch.kwak (chkwak@mnlsolution.com)
@@ -42,6 +48,9 @@ public class MemberController {
 	@Autowired
 	private TeamRepository teamRepository;
 	
+	@Autowired
+	private EntityManager entityManager;  
+	
 	
 	@RequestMapping(value = "/")
 	public @ResponseBody String home(Locale locale) {
@@ -49,7 +58,7 @@ public class MemberController {
 		Date date = new Date();
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG,
 				DateFormat.LONG, locale);
-		String formattedDate = dateFormat.format(date);		
+		String formattedDate = dateFormat.format(date);
 		
 		log.info("home Start.. 접속시간 : {}" , formattedDate);
 		
@@ -112,10 +121,34 @@ public class MemberController {
 	public @ResponseBody List<Member> listQuery(@RequestParam("name") String name) {
 		
 		log.info("**************{}", name);
-		
 		 List<Member> member = (List<Member>) repository.findByCustomQueryName(name);
-		
 		return member;   
+	}
+	
+	
+	/**
+	 * QueryDSL 질의
+	 * @return
+	 */
+	@RequestMapping(value = "/listQueryDSL", method=RequestMethod.GET)
+	public @ResponseBody List<Member> listQueryDSL(@RequestParam("name") String name) {
+		
+		log.info("**************{}", name);
+		
+		JPAQuery query = new JPAQuery(entityManager); 
+		QMember qM = QMember.member;
+		
+		// 일반 where 절 
+//		List<Member> members = query.from(qM).orderBy(qM.age.desc()).list(qM);
+		
+		// like 절
+//		List<Member> members = query.from(qM).where(qM.name.like("%" + name + "%")).orderBy(qM.regiTime.desc()).list(qM);
+		List<Member> members = query.from(qM).where(qM.name.like("%" + name + "%")).orderBy(qM.regiTime.desc()).list(qM);
+		
+		// and 절
+		List<Member> members2 = query.from(qM).where(  qM.name.eq("곽채화").and(qM.name.eq("홍길동"))).list(qM); 
+		
+		return members;   
 	}
 	
 	
